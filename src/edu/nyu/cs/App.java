@@ -53,8 +53,29 @@ public class App extends PApplet {
 	 * 	- when the user presses the `6` key, the code calls the customVisualization2 method to show data of your choosing, visualized with marker types of your choosing.
 	 */
 	public void keyPressed() {
-		// System.out.println("Key pressed: " + key);
+		System.out.println("Key pressed: " + key);
 		// complete this method
+		switch(key){
+			case 1:
+				showMay2021MorningCounts(data);
+				break;
+			case 2:
+				showMay2021EveningCounts(data);
+				break;
+			case 3:
+				showMay2021EveningMorningCountsDifference(data);
+				break;
+			case 4:
+				showMay2021VersusMay2019Counts(data);
+				break;
+			case 5:
+				customVisualization1(data);
+				break;
+			case 6:
+				customVisualization2(data);
+				break;
+
+		}
 
 	}
 
