@@ -2,7 +2,9 @@ package edu.nyu.cs;
 
 // some basic java imports
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -89,9 +91,18 @@ public class App extends PApplet {
 		clearMap(); // clear any markers previously placed on the map
 		mapTitle = "May 2021 Morning Pedestrian Counts";
 
-		// complete this method - DELETE THE EXAMPLE CODE BELOW
+		for (String[] dataString : data){
+			float lat = Float.parseFloat(dataString[0]);
+			float lng = Float.parseFloat(dataString[1]);
+			Location markerLocation = new Location(lat,lng);
+			int pedestrianCount = Integer.parseInt(dataString[dataString.length-3]);
+			float markerRadius = pedestrianCount * SCALE_FACTOR;
+			float[] markerColour = new float[]{255, 0, 0, 127};
+			MarkerBubble marker = new MarkerBubble(this, markerLocation, markerRadius, markerColour);
+			map.addMarker(marker);
+		}
 
-		// remove the code below and replace with your own code that solves the problem indicated in the comments
+		/* // remove the code below and replace with your own code that solves the problem indicated in the comments
 		// example of how to create a marker at a specific location and place it on the map
 		float lat = 40.737375365084105f; // latitude of a location of interest
 		float lng = -74.00101207586745f; // longitude of a location of interest
@@ -100,7 +111,7 @@ public class App extends PApplet {
 		float markerRadius = pedestrianCount * SCALE_FACTOR; // scale down the marker radius to look better on the map
 		float[] markerColor = {255, 0, 0, 127}; // a color, specified as a combinatino of red, green, blue, and alpha (i.e. transparency), each represented as numbers between 0 and 255.
 		MarkerBubble marker = new MarkerBubble(this, markerLocation, markerRadius, markerColor); // don't worry about the `this` keyword for now... just make sure it's there.
-		map.addMarker(marker);
+		map.addMarker(marker);*/
 	}
 
 	/**
@@ -113,6 +124,17 @@ public class App extends PApplet {
 		clearMap(); // clear any markers previously placed on the map
 		mapTitle = "May 2021 Evening Pedestrian Counts";
 		// complete this method
+
+		for (String[] dataString : data){
+			float lat = Float.parseFloat(dataString[0]);
+			float lng = Float.parseFloat(dataString[1]);
+			Location markerLocation = new Location(lat,lng);
+			int pedestrianCount = Integer.parseInt(dataString[dataString.length-2]);
+			float markerRadius = pedestrianCount * SCALE_FACTOR;
+			float[] markerColour = new float[]{255, 0, 0, 127};
+			MarkerBubble marker = new MarkerBubble(this, markerLocation, markerRadius, markerColour);
+			map.addMarker(marker);
+		}
 	}
 
 	/**
@@ -124,6 +146,23 @@ public class App extends PApplet {
 		clearMap(); // clear any markers previously placed on the map
 		mapTitle = "Difference Between May 2021 Evening and Morning Pedestrian Counts";
 		// complete this method
+
+		for (String[] dataString : data){
+			float lat = Float.parseFloat(dataString[0]);
+			float lng = Float.parseFloat(dataString[1]);
+			Location markerLocation = new Location(lat,lng);
+			int eveningPedestrianCount = Integer.parseInt(dataString[dataString.length-2]);
+			int morningPedestrianCount = Integer.parseInt(dataString[dataString.length-3]);
+			int pedestrianCountDifference = eveningPedestrianCount-morningPedestrianCount;
+			float markerRadius = Math.abs(pedestrianCountDifference) * SCALE_FACTOR;
+			float[] markerColour = new float[]{255, 0, 0, 127};
+			if(pedestrianCountDifference>=0){
+				markerColour[0] = 0f;
+				markerColour[2] = 255f;
+			}
+			MarkerBubble marker = new MarkerBubble(this, markerLocation, markerRadius, markerColour);
+			map.addMarker(marker);
+		}
 	}
 
 	/**
@@ -136,7 +175,41 @@ public class App extends PApplet {
 	public void showMay2021VersusMay2019Counts(String[][] data) {
 		clearMap(); // clear any markers previously placed on the map
 		mapTitle = "Difference Between May 2021 and May 2019 Pedestrian Counts";
+
 		// complete this method
+		for (String[] dataString: data){
+			if(dataString[dataString.length-7].equals("")){
+				continue;
+			}
+			float lat = Float.parseFloat(dataString[0]);
+			float lng = Float.parseFloat(dataString[1]);
+			Location markerLocation = new Location(lat,lng);
+			float May2019AverageCount = calculateAverage(dataString, 9);
+			float May2021AverageCount = calculateAverage(dataString, 3);
+			int pedestrianCountDifference = (int) (May2021AverageCount-May2019AverageCount);
+			float markerRadius = Math.abs(pedestrianCountDifference) * SCALE_FACTOR;
+			float[] markerColour = new float[]{255, 0, 0, 127};
+			if(pedestrianCountDifference>=0){
+				markerColour[0] = 0f;
+				markerColour[2] = 255f;
+			}
+			MarkerBubble marker = new MarkerBubble(this, markerLocation, markerRadius, markerColour);
+			map.addMarker(marker);
+
+		}
+	}
+
+	/**
+	 * @param dataString the data
+	 * @param offset the position of the Morning count
+	 * @return Average count of pedestrians for that count, 
+	 */
+	public float calculateAverage(String[] dataString,int offset){
+		int MorningCount = Integer.parseInt(dataString[dataString.length-offset]);
+		int EveningCount = Integer.parseInt(dataString[dataString.length-offset+1]);
+		int WeekendCount = Integer.parseInt(dataString[dataString.length-offset+2]);
+		float AverageCount = ((MorningCount+EveningCount)*5+(WeekendCount)*4)/14;
+		return AverageCount;
 	}
 
 	/**
@@ -147,8 +220,18 @@ public class App extends PApplet {
 	 */
 	public void customVisualization1(String[][] data) {
 		clearMap(); // clear any markers previously placed on the map
-		mapTitle = "Enter Custom Map 1 Title Here";
+		mapTitle = "Average May 2021 Pedestrian Counts";
 		// complete this method		
+		for (String[] dataString : data){
+			float lat = Float.parseFloat(dataString[0]);
+			float lng = Float.parseFloat(dataString[1]);
+			Location markerLocation = new Location(lat,lng);
+			int pedestrianCount = (int) calculateAverage(dataString, 3);
+			float markerRadius = pedestrianCount * SCALE_FACTOR;
+			float[] markerColour = new float[]{0, 255, 0, 127};
+			MarkerBubble marker = new MarkerBubble(this, markerLocation, markerRadius, markerColour);
+			map.addMarker(marker);
+		}
 	}
 
 	/**
@@ -159,8 +242,21 @@ public class App extends PApplet {
 	 */
 	public void customVisualization2(String[][] data) {
 		clearMap(); // clear any markers previously placed on the map
-		mapTitle = "Enter Custom Map 2 Title Here";
+		mapTitle = "Average May 2019 Pedestrian Counts";
 		// complete this method	
+		for (String[] dataString : data){
+			if(dataString[dataString.length-7].equals("")){
+				continue;
+			}
+			float lat = Float.parseFloat(dataString[0]);
+			float lng = Float.parseFloat(dataString[1]);
+			Location markerLocation = new Location(lat,lng);
+			int pedestrianCount = (int) calculateAverage(dataString, 9);
+			float markerRadius = pedestrianCount * SCALE_FACTOR;
+			float[] markerColour = new float[]{0, 255, 0, 127};
+			MarkerBubble marker = new MarkerBubble(this, markerLocation, markerRadius, markerColour);
+			map.addMarker(marker);
+		}
 	}
 
 	/**
@@ -171,12 +267,30 @@ public class App extends PApplet {
 	 * @throws FileNotFoundException
 	 */
 	public String[] getLinesFromFile(String filepath) {
-		String[] lines = {"foo", "bar"};
-		return lines;
-		// delete the two lines above... they are placeholder only
-		// complete this method
-	}
+	
+    // modified from Text Analysis Exercise!
 
+    ArrayList<String> fullTextSplit = new ArrayList<String>();
+    // opening up a file may fail if the file is not there, so use try/catch to protect against such errors
+    try {
+      // try to open the file and extract its contents
+      Scanner scn = new Scanner(new File(filepath));
+      while (scn.hasNextLine()) {
+        String line = scn.nextLine();
+        fullTextSplit.add(line);
+      }
+      scn.close(); // be nice and close the Scanner
+    }
+    catch (FileNotFoundException e) {
+      // in case we fail to open the file, output a friendly message.
+      System.out.println("Oh no... can't find the file!");
+    }
+	String[] fullTextSplitStringArr = new String[fullTextSplit.size()];
+	for (int i = 0; i<fullTextSplit.size();i++){
+		fullTextSplitStringArr[i] = fullTextSplit.get(i);
+	}
+    return fullTextSplitStringArr; // return the full text
+  }
 	/**
 	 * Takes an array of lines of text in comma-separated values (CSV) format and splits each line into a sub-array of data fields.
 	 * For example, an argument such as {"1,2,3", "100,200,300"} could result in a returned array { {"1", "2", "3"}, {"100", "200", "300"} }
@@ -187,20 +301,67 @@ public class App extends PApplet {
 	 * @return A two-dimensional String array, where each inner array contains the data from one of the lines, split by commas.
 	 */
 	public String[][] getDataFromLines(String[] lines) {
-		// complete this method - DELETE THE EXAMPLE CODE BELOW
-
-		// hint: ultimately, you want this function to return data structured something like the following (you can structure your array differently if you prefer)
-		// in this example, the geospatial Point data (latitude and longitude), which is one field in the original CSV file, has been broken up into two fields... you would be wise to do this too.
-		String[][] allLines = { 
-			// the first two values are the latitude and longitude... these were a single field in the original CSV file
-			{"-73.90459140730678","40.87919896648574","Bronx","1","1","Broadway","West 231st Street","Naples Terrace","N","1189","4094","2508","734","2646","2939","802","4015","2631","1125","4310","3420","1001","3475","2832","991","4262","2469","1010","3609","3128","863","4119","2217","997","4440","2687","1328","3820","2428","1288","3328","3365","1268","4315","2276","1210","4710","3825","1206","4590","3008","1220","4384","2641","1450","4646","2996","1788","4980","3033","1204","4520","2999","1246","4531","2686","1309","3642","2830","1916","5893","2776","1111","4044","2731","1271","4502","2899","1708","4464","2967","","","","486","2843","1754","630","3262","4710"},
-			{"-73.92188432870218","40.82662794123294","Bronx","2","2","East 161st Street","Grand Concourse","Sheridan Avenue","Y","1511","3184","1971","1855","3754","1183","1136","2638","1522","1939","3283","1383","1351","3111","1304","1227","3137","2762","2077","3283","1409","1007","3069","1477","1734","3333","1772","2051","3525","1752","1233","1875","1912","2113","4099","1970","2278","4215","2288","2071","3890","1832","2206","4363","2315","1949","4435","2388","2318","4589","2483","2005","4790","2512","2053","4721","2311","2109","5485","2548","1848","4920","2143","2389","5952","2832","1749","5148","2156","2006","4723","1604","1702","4347","1576","780","1892","1287","1405","2097","8410"},
-			{"-73.92785197149036","40.80034506063933","Harlem River Bridges","113","113","Triborough Bridge (Manhattan span)","midpoint","","N","17","35","34","11","44","24","30","44","16","30","200","23","37","44","23","20","174","66","12","39","55","36","205","64","10","45","11","7","119","39","26","21","49","6","33","15","12","42","16","13","31","40","14","32","10","21","42","20","19","36","14","17","40","28","10","18","8","21","43","21","7","19","5","16","38","24","6","14","4","12","15","6","","","","","","","23","52","6437"},
-			{"-73.93686603590555","40.78611224350854","Harlem River Bridges","114","114","Wards Island Bridge","midpoint","","N","57","207","71","63","186","149","45","203","113","80","190","120","33","213","324","43","151","173","37","169","674","77","205","913","32","66","70","62","189","936","78","249","439","102","460","569","191","455","435","92","514","594","164","527","312","123","458","564","189","539","312","117","424","581","160","484","300","159","490","587","169","493","312","178","519","608","187","543","351","213","490","263","","","","","","","237","405","6353"}
-		};
+		ArrayList<String[]> allLinesArrayList = new ArrayList<String[]>();
+		// complete this method
+		for (String line : lines){
+			String[] currentLine = line.split(",");
+			String[] currentLineWithLatLong = new String[currentLine.length+1];
+			for (int i = 2; i<currentLineWithLatLong.length;i++){
+				currentLineWithLatLong[i] = currentLine[i-1];
+			}
+			String[] temporaryLatLong = parseLatLong(currentLine[0]); //makes a String[] with lat and long as separate strings
+			currentLineWithLatLong[0] = temporaryLatLong[0];
+			currentLineWithLatLong[1] = temporaryLatLong[1];
+			allLinesArrayList.add(currentLine);
+		}
+	
+		String[][] allLines = new String[allLinesArrayList.size()][];
+		for (int i = 0; i<allLinesArrayList.size();i++){
+			allLines[i] = allLinesArrayList.get(i);
+		}
 		return allLines;
 
 	}
+
+
+	/**
+	 * 
+	 * 
+	 * @param dataValue the field from column "the_geom"
+	 */
+	public String[] parseLatLong(String dataValue){
+		String[] LatAndLong = new String[2];
+		String[] StringGeomLocation = dataValue.split(" ",0);
+		LatAndLong[0] = removeChars(StringGeomLocation[1],'(');
+		LatAndLong[1] = removeChars(StringGeomLocation[2],')');
+		return LatAndLong;
+	}
+	/**
+	 * 
+	 * @param beforeEditString unedited string
+	 * @param filter character to be removed
+	 * @return edited string
+	 */
+	public String removeChars(String beforeEditString, char filter){
+		String afterEditString = "";
+		for (int i = 0; i<beforeEditString.length();i++){
+			if (beforeEditString.charAt(i) == filter){
+				continue;
+			}
+			else {
+				afterEditString += beforeEditString.charAt(i);
+			}
+		}
+		return afterEditString;
+	}
+
+
+
+
+
+
+
+
 
 
 	/****************************************************************/
