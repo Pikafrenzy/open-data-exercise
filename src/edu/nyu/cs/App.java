@@ -34,7 +34,7 @@ public class App extends PApplet {
 	/*                  BEGIN - DON'T MODIFY THIS CODE              */
 	/****************************************************************/
 	UnfoldingMap map; // will be a reference to the actual map
-	String mapTitle; // will hold the title of the map
+	String mapTitle = ""; // will hold the title of the map
 	final float SCALE_FACTOR = 0.0002f; // a factor used to scale pedestrian counts to calculate a reasonable radius for a bubble marker on the map
 	final int DEFAULT_ZOOM_LEVEL = 11;
 	final Location DEFAULT_LOCATION = new Location(40.7286683f, -73.997895f); // a hard-coded NYC location to start with
@@ -58,22 +58,22 @@ public class App extends PApplet {
 		System.out.println("Key pressed: " + key);
 		// complete this method
 		switch(key){
-			case 1:
+			case '1':
 				showMay2021MorningCounts(data);
 				break;
-			case 2:
+			case '2':
 				showMay2021EveningCounts(data);
 				break;
-			case 3:
+			case '3':
 				showMay2021EveningMorningCountsDifference(data);
 				break;
-			case 4:
+			case '4':
 				showMay2021VersusMay2019Counts(data);
 				break;
-			case 5:
+			case '5':
 				customVisualization1(data);
 				break;
-			case 6:
+			case '6':
 				customVisualization2(data);
 				break;
 
@@ -302,8 +302,13 @@ public class App extends PApplet {
 	 */
 	public String[][] getDataFromLines(String[] lines) {
 		ArrayList<String[]> allLinesArrayList = new ArrayList<String[]>();
+		boolean skipFirstLine = true;
 		// complete this method
 		for (String line : lines){
+			if (skipFirstLine){
+				skipFirstLine = false;
+				continue;
+			}
 			String[] currentLine = line.split(",");
 			String[] currentLineWithLatLong = new String[currentLine.length+1];
 			for (int i = 2; i<currentLineWithLatLong.length;i++){
@@ -312,7 +317,7 @@ public class App extends PApplet {
 			String[] temporaryLatLong = parseLatLong(currentLine[0]); //makes a String[] with lat and long as separate strings
 			currentLineWithLatLong[0] = temporaryLatLong[0];
 			currentLineWithLatLong[1] = temporaryLatLong[1];
-			allLinesArrayList.add(currentLine);
+			allLinesArrayList.add(currentLineWithLatLong);
 		}
 	
 		String[][] allLines = new String[allLinesArrayList.size()][];
@@ -385,13 +390,11 @@ public class App extends PApplet {
 			String[] lines = getLinesFromFile(path); // get an array of the lines from the file.
 			data = getDataFromLines(lines); // get a two-dimensional array of the data in these lines; complete the getDataFromLines method so the data from the file is returned appropriately
 			// System.out.println(Arrays.deepToString(data)); // for debugging
-
 			// automatically zoom and pan into the New York City location
 			map.zoomAndPanTo(DEFAULT_ZOOM_LEVEL, DEFAULT_LOCATION);
 
 			// by default, show markers for the morning counts in May 2021 (the third-to-last field in the CSV file)
 			showMay2021MorningCounts(data);
-
 			// various ways to zoom in / out
 			// map.zoomLevelOut();
 			// map.zoomLevelIn();
