@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import processing.core.PApplet;
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.geo.Location;
+import de.fhpotsdam.unfolding.marker.SimplePointMarker;
 import de.fhpotsdam.unfolding.utils.MapUtils;
 import de.fhpotsdam.unfolding.providers.OpenStreetMap.*;
 import de.fhpotsdam.unfolding.providers.MapBox;
@@ -92,8 +93,8 @@ public class App extends PApplet {
 		mapTitle = "May 2021 Morning Pedestrian Counts";
 
 		for (String[] dataString : data){
-			float lat = Float.parseFloat(dataString[0]);
-			float lng = Float.parseFloat(dataString[1]);
+			float lat = Float.parseFloat(dataString[1]);
+			float lng = Float.parseFloat(dataString[0]);
 			Location markerLocation = new Location(lat,lng);
 			int pedestrianCount = Integer.parseInt(dataString[dataString.length-3]);
 			float markerRadius = pedestrianCount * SCALE_FACTOR;
@@ -126,8 +127,8 @@ public class App extends PApplet {
 		// complete this method
 
 		for (String[] dataString : data){
-			float lat = Float.parseFloat(dataString[0]);
-			float lng = Float.parseFloat(dataString[1]);
+			float lat = Float.parseFloat(dataString[1]);
+			float lng = Float.parseFloat(dataString[0]);
 			Location markerLocation = new Location(lat,lng);
 			int pedestrianCount = Integer.parseInt(dataString[dataString.length-2]);
 			float markerRadius = pedestrianCount * SCALE_FACTOR;
@@ -148,8 +149,8 @@ public class App extends PApplet {
 		// complete this method
 
 		for (String[] dataString : data){
-			float lat = Float.parseFloat(dataString[0]);
-			float lng = Float.parseFloat(dataString[1]);
+			float lat = Float.parseFloat(dataString[1]);
+			float lng = Float.parseFloat(dataString[0]);
 			Location markerLocation = new Location(lat,lng);
 			int eveningPedestrianCount = Integer.parseInt(dataString[dataString.length-2]);
 			int morningPedestrianCount = Integer.parseInt(dataString[dataString.length-3]);
@@ -158,7 +159,7 @@ public class App extends PApplet {
 			float[] markerColour = new float[]{255, 0, 0, 127};
 			if(pedestrianCountDifference>=0){
 				markerColour[0] = 0f;
-				markerColour[2] = 255f;
+				markerColour[1] = 255f;
 			}
 			MarkerBubble marker = new MarkerBubble(this, markerLocation, markerRadius, markerColour);
 			map.addMarker(marker);
@@ -181,8 +182,8 @@ public class App extends PApplet {
 			if(dataString[dataString.length-7].equals("")){
 				continue;
 			}
-			float lat = Float.parseFloat(dataString[0]);
-			float lng = Float.parseFloat(dataString[1]);
+			float lat = Float.parseFloat(dataString[1]);
+			float lng = Float.parseFloat(dataString[0]);
 			Location markerLocation = new Location(lat,lng);
 			float May2019AverageCount = calculateAverage(dataString, 9);
 			float May2021AverageCount = calculateAverage(dataString, 3);
@@ -191,7 +192,7 @@ public class App extends PApplet {
 			float[] markerColour = new float[]{255, 0, 0, 127};
 			if(pedestrianCountDifference>=0){
 				markerColour[0] = 0f;
-				markerColour[2] = 255f;
+				markerColour[1] = 255f;
 			}
 			MarkerBubble marker = new MarkerBubble(this, markerLocation, markerRadius, markerColour);
 			map.addMarker(marker);
@@ -223,12 +224,12 @@ public class App extends PApplet {
 		mapTitle = "Average May 2021 Pedestrian Counts";
 		// complete this method		
 		for (String[] dataString : data){
-			float lat = Float.parseFloat(dataString[0]);
-			float lng = Float.parseFloat(dataString[1]);
+			float lat = Float.parseFloat(dataString[1]);
+			float lng = Float.parseFloat(dataString[0]);
 			Location markerLocation = new Location(lat,lng);
 			int pedestrianCount = (int) calculateAverage(dataString, 3);
 			float markerRadius = pedestrianCount * SCALE_FACTOR;
-			float[] markerColour = new float[]{0, 255, 0, 127};
+			float[] markerColour = new float[]{0, 0, 255, 127};
 			MarkerBubble marker = new MarkerBubble(this, markerLocation, markerRadius, markerColour);
 			map.addMarker(marker);
 		}
@@ -248,12 +249,12 @@ public class App extends PApplet {
 			if(dataString[dataString.length-7].equals("")){
 				continue;
 			}
-			float lat = Float.parseFloat(dataString[0]);
-			float lng = Float.parseFloat(dataString[1]);
+			float lat = Float.parseFloat(dataString[1]);
+			float lng = Float.parseFloat(dataString[0]);
 			Location markerLocation = new Location(lat,lng);
 			int pedestrianCount = (int) calculateAverage(dataString, 9);
 			float markerRadius = pedestrianCount * SCALE_FACTOR;
-			float[] markerColour = new float[]{0, 255, 0, 127};
+			float[] markerColour = new float[]{0, 0, 255, 127};
 			MarkerBubble marker = new MarkerBubble(this, markerLocation, markerRadius, markerColour);
 			map.addMarker(marker);
 		}
